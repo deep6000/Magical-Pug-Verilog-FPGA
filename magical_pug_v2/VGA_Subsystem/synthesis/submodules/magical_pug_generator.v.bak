@@ -1,0 +1,634 @@
+	// (C) 2001-2017 Intel Corporation. All rights reserved.
+	// Your use of Intel Corporation's design tools, logic functions and other 
+	// software and tools, and its AMPP partner logic functions, and any output 
+	// files any of the foregoing (including device programming or simulation 
+	// files), and any associated documentation or information are expressly subject 
+	// to the terms and conditions of the Intel Program License Subscription 
+	// Agreement, Intel MegaCore Function License Agreement, or other applicable 
+	// license agreement, including, without limitation, that your use is for the 
+	// sole purpose of programming logic devices manufactured by Intel and sold by 
+	// Intel or its authorized distributors.  Please refer to the applicable 
+	// agreement for further details.
+
+
+	// THIS FILE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+	// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+	// FROM, OUT OF OR IN CONNECTION WITH THIS FILE OR THE USE OR OTHER DEALINGS
+	// IN THIS FILE.
+
+	/******************************************************************************
+	 *                                                                            *
+	 * This module generators a sample video input stream for DE boards.          *
+	 *                                                                            *
+	 ******************************************************************************/
+
+	module magical_pug_generator (
+		// Inputs
+		clk,
+		reset,
+		ready,
+		keys,
+
+		// Outputs
+		data,
+		startofpacket,
+		endofpacket,
+		empty,
+		score,
+		valid,
+		switch,
+		digit_0,
+		digit_1,
+		digit_2
+	);
+
+	/*****************************************************************************
+	 *                           Parameter Declarations                          *
+	 *****************************************************************************/
+
+	parameter DW							= 23;
+	parameter WW							= 10;
+	parameter HW							= 9;
+
+	parameter WIDTH						= 640;
+	parameter HEIGHT						= 480;
+
+	parameter PIPE1_Y1			= 130;
+	parameter PIPE1_Y2			= 270;
+	parameter PIPE2_Y1			= 220;
+	parameter PIPE2_Y2			= 380;
+	parameter PIPE3_Y1			= 100;
+	parameter PIPE3_Y2			= 285;
+	parameter PIPE_WIDTH			= 25; 
+
+	parameter BIRD_START_X		= 75;
+	parameter BIRD_START_Y		= 200;
+	parameter BIRD_WIDTH 		= 40;
+
+	parameter BIRD_JUMP 			= 50;
+	parameter BIRD_FALL_RATE	= 80000;
+	integer GAME_SPEED;
+
+	/*****************************************************************************
+	 *                             Port Declarations                             *
+	 *****************************************************************************/
+
+	// Inputs
+	input clk;
+	input reset;
+	input ready;
+	input [3:0] keys;
+	input switch;
+
+	// Outputs
+	output [9:0] score;
+	output [DW: 0] data;
+	output startofpacket;
+	output endofpacket;
+	output empty;
+	output valid;
+	output [6:0] digit_0;
+	output [6:0] digit_1;
+	output [6:0] digit_2;
+
+	/*****************************************************************************
+	 *                           Constant Declarations                           *
+	 *****************************************************************************/
+
+
+	/*****************************************************************************
+	 *                 Internal Wires and Registers Declarations                 *
+	 *****************************************************************************/
+
+	// Internal Wires
+
+	reg [7: 0]	red;
+	reg [7: 0]	green;
+	reg [7: 0]	blue;
+
+	// Internal Registers
+	reg	[WW: 0]	x;
+	reg	[HW: 0]	y;
+
+	// Game Control
+	reg start_game;
+	reg game_end;
+	reg reset_game;
+	reg [9:0] score;
+	reg[6:0] digit_0;
+	reg[6:0] digit_1;
+	reg[6:0] digit_2;
+
+	// Bird Position
+	reg	[WW: 0]	bird_x_pos;
+	reg	[31: 0]	bird_y_pos;
+	reg [31:0]	bird_counter;
+	reg start_fall;
+
+	// Pipe 1 Position
+	reg	[WW: 0]	pipe1_x_pos;
+	//reg	[31: 0]	pipe1_y_pos;
+	reg [31:0]	pipe1_counter;
+
+	// Pipe 2 Position
+	reg	[WW: 0]	pipe2_x_pos;
+	//reg	[31: 0]	pipe2_y_pos;
+
+	// Pipe 3 Position 
+	reg	[WW: 0]	pipe3_x_pos;
+
+	// Move Bird Button
+	wire key0_pressed;
+	wire key0_released;
+	wire key0_state;
+
+	// Start Game Button
+	wire key3_pressed;
+	wire key3_released;
+	wire key3_state;
+
+	// Reset Game Button
+	wire key2_pressed;
+	wire key2_released;
+	wire key2_state;
+
+	// Faux 7-Segment Display
+	reg [3:0] dig0;
+	reg [3:0] dig1;
+	reg [3:0] dig2;
+
+	reg draw_dig_0;
+	reg draw_dig_1;
+	reg draw_dig_2;
+
+	reg dig0_a_segment;
+	reg dig0_b_segment;
+	reg dig0_c_segment;
+	reg dig0_d_segment;
+	reg dig0_e_segment;
+	reg dig0_f_segment;
+	reg dig0_g_segment;
+
+	reg dig1_a_segment;
+	reg dig1_b_segment;
+	reg dig1_c_segment;
+	reg dig1_d_segment;
+	reg dig1_e_segment;
+	reg dig1_f_segment;
+	reg dig1_g_segment;
+
+	reg dig2_a_segment;
+	reg dig2_b_segment;
+	reg dig2_c_segment;
+	reg dig2_d_segment;
+	reg dig2_e_segment;
+	reg dig2_f_segment;
+	reg dig2_g_segment;
+
+
+	// State Machine Registers
+
+	// Integers
+
+	/*****************************************************************************
+	 *                         Finite State Machine(s)                           *
+	 *****************************************************************************/
+
+
+	/*****************************************************************************
+	 *                             Sequential Logic                              *
+	 *****************************************************************************/
+	// Output Registers
+
+	// Internal Registers
+
+	// count up width
+	always @(posedge clk)
+	begin
+		if (reset)
+			x <= 'h0;
+		else if (ready)
+		begin
+			if (x == (WIDTH - 1))
+				x <= 'h0;
+			else
+				x <= x + 1'b1;
+		end
+	end
+
+	// count up height
+	always @(posedge clk)
+	begin
+		if (reset)
+			y <= 'h0;
+		else if (ready && (x == (WIDTH - 1)))
+		begin
+			if (y == (HEIGHT - 1))
+				y <= 'h0;
+			else
+				y <= y + 1'b1;
+		end
+	end
+
+	// Determine Game Start
+	always @(posedge clk)
+	begin
+		if (reset) begin
+			// Start Position
+			start_game <= 0;
+			reset_game <= 0;
+		end
+		else begin
+			if(switch)
+				GAME_SPEED <= 170000;
+			else
+				GAME_SPEED <= 350000;
+			if (key3_pressed) begin
+				start_game <= 1;
+				reset_game <= 0;
+			end
+			else if (key2_pressed) begin
+				reset_game <= 1;
+				start_game <= 0;
+			end
+			else if (game_end) begin
+				start_game <= 0;
+			end
+		end
+	end
+
+	// move_bird
+	always @(posedge clk)
+	begin
+		if (reset) begin
+			// Start Position
+			start_fall <= 0;
+			bird_x_pos <= BIRD_START_X;
+			bird_y_pos <= BIRD_START_Y;
+			bird_counter <= 0;
+		end
+		else begin
+			if (start_game) begin
+				if (key0_pressed) begin
+					bird_y_pos <= bird_y_pos - BIRD_JUMP;
+					start_fall <= 0;
+
+					// Height cannot exceed screen height
+					if (bird_y_pos < 48) begin
+						bird_y_pos <= 'd48;				
+					end
+				end
+				else if (key0_released) begin
+					start_fall <= 1;
+				end
+				else begin
+					if (start_fall == 1) begin
+						bird_counter <= bird_counter + 1;
+
+						if (bird_counter > BIRD_FALL_RATE) begin
+							
+							bird_y_pos <= bird_y_pos + 1;
+							bird_counter <= 0;
+
+							// Height cannot exceed screen lower height
+							if (bird_y_pos >= 420) begin
+								bird_y_pos <= 'd420;				
+							end
+						end
+					end
+				end
+			end
+			else if (reset_game) begin
+				// Start Position
+				start_fall <= 0;
+				bird_x_pos <= BIRD_START_X;
+				bird_y_pos <= BIRD_START_Y;
+				bird_counter <= 0;
+			end	
+		end
+	end
+
+	// move pipes
+	always @(posedge clk)
+	begin
+		if (reset) begin
+			// Start Position
+			pipe1_x_pos <= 'd200;
+			pipe2_x_pos <= 'd400;
+			pipe3_x_pos <= 'd600;
+			pipe1_counter <= 0;
+			score <= 0;
+		end
+		else begin
+			if (start_game) begin
+				pipe1_counter <= pipe1_counter + 1;
+
+				if (pipe1_counter > GAME_SPEED) begin
+					pipe1_counter <= 0;
+					pipe1_x_pos <= pipe1_x_pos - 'd1;
+					pipe2_x_pos <= pipe2_x_pos - 'd1;
+					pipe3_x_pos <= pipe3_x_pos - 'd1;
+
+					if (pipe1_x_pos <= 10) begin
+						pipe1_x_pos <= 'd640;
+						score = score + 1;
+					end
+
+					else if (pipe2_x_pos <= 10) begin
+						pipe2_x_pos <= 'd640;
+						score = score + 1;
+					end
+					
+					else if (pipe3_x_pos <= 10) begin
+						pipe3_x_pos <= 'd640;
+						score = score + 1;
+					end
+					else;
+				end
+			end		
+			else if (reset_game) begin
+				// Start Position
+				pipe1_x_pos <= 'd200;
+				pipe2_x_pos <= 'd400;
+				pipe3_x_pos <= 'd600;
+				pipe1_counter <= 0;
+				score <= 0;
+			end
+		end
+	end
+
+
+	// Animation
+	always @(posedge clk)
+	begin
+		// Get Score
+		dig0 <= score / 100;
+		dig1 <= (score / 10) % 10;
+		dig2 <= (score % 10);
+		
+
+
+		// Faux Display Segments Boolean Termsreg dig0_a_segment;
+
+
+		case (dig0)
+			0: digit_0 <= 7'b1000000;
+			1: digit_0 <= 7'b1111001;
+			2: digit_0 <= 7'b0100100;
+			3: digit_0 <= 7'b0110000;
+			4: digit_0 <= 7'b0011001;
+			5: digit_0 <= 7'b0010010;
+			6: digit_0 <= 7'b0000010;
+			7: digit_0 <= 7'b1111000;
+			8: digit_0 <= 7'b0000000;
+			9: digit_0 <= 7'b0010000;
+			default: draw_dig_0 <= 0;
+		endcase	
+
+		case (dig1)
+			0: digit_1 <= 7'b1000000;
+			1: digit_1 <= 7'b1111001;
+			2: digit_1 <= 7'b0100100;
+			3: digit_1 <= 7'b0110000;
+			4: digit_1 <= 7'b0011001;
+			5: digit_1 <= 7'b0010010;
+			6: digit_1 <= 7'b0000010;
+			7: digit_1 <= 7'b1111000;
+			8: digit_1 <= 7'b0000000;
+			9: digit_1 <= 7'b0010000;
+			default: draw_dig_1 <= 0;
+		endcase	
+
+		case (dig2)
+			0: digit_2 <= 7'b1000000;
+			1: digit_2 <= 7'b1111001;
+			2: digit_2 <= 7'b0100100;
+			3: digit_2 <= 7'b0110000;
+			4: digit_2 <= 7'b0011001;
+			5: digit_2 <= 7'b0010010;
+			6: digit_2 <= 7'b0000010;
+			7: digit_2 <= 7'b1111000;
+			8: digit_2 <= 7'b0000000;
+			9: digit_2 <= 7'b0010000;
+			default: draw_dig_2 <= 0;
+		endcase
+
+		
+		
+		// Draw Bird
+		if ( ((x > bird_x_pos) && (x < (bird_x_pos + BIRD_WIDTH))) && ((y > bird_y_pos) && (y < (bird_y_pos + BIRD_WIDTH))) ) begin
+			red <= 8'd128;
+			blue <= 8'd0;
+			green <= 8'd0;
+		end
+			
+		
+		// Top Part of Pipe 1
+		else if ( ((x > pipe1_x_pos) && (x < (pipe1_x_pos + PIPE_WIDTH))) && (y <  PIPE1_Y1)) begin
+			
+			if(y < 40)	begin
+				green <= 8'd255;
+				red <= 8'd255;
+				blue <= 8'd255;
+			end
+			else if ((y > 40) && (y < 80)) begin
+				green <= 8'd0;
+				red <= 8'd255;
+				blue <= 8'd0;
+			end
+			else begin
+				green <= 8'd255;
+				red <= 8'd255;
+				blue <= 8'd255;
+			end
+			
+		end
+		
+		// Bottom Part of Pipe 1
+		else if ( ((x > pipe1_x_pos) && (x < (pipe1_x_pos + PIPE_WIDTH))) && (y > PIPE1_Y2) ) begin
+			if(y < 330) begin
+				green <= 8'd255;
+				red <= 8'd255;
+				blue <= 8'd255;
+			end
+			else if ( y < 400)begin
+				green <= 8'd0;
+				red <= 8'd255;
+				blue <= 8'd0;
+			end
+			else begin
+				green <= 8'd255;
+				red <= 8'd255;
+				blue <= 8'd255;
+			end
+		end
+		
+		 
+		// Top Part of Pipe 2
+		else if ( ((x > pipe2_x_pos) && (x < (pipe2_x_pos + 25))) && (y < PIPE2_Y1) ) begin
+			if(y < 70)	begin
+				green <= 8'd255;
+				red <= 8'd255;
+				blue <= 8'd255;
+			end
+			else if ((y > 70) && (y < 140)) begin
+				green <= 8'd0;
+				red <= 8'd255;
+				blue <= 8'd0;
+			end
+			else begin
+				green <= 8'd255;
+				red <= 8'd255;
+				blue <= 8'd255;
+			end
+		end
+		
+		
+		// Bottom Part of Pipe 2
+		else if ( ((x > pipe2_x_pos) && (x < (pipe2_x_pos + 25))) && (y > PIPE2_Y2) ) begin
+			if(y < 430) begin
+				green <= 8'd255;
+				red <= 8'd255;
+				blue <= 8'd255;
+			end
+			else begin
+				green <= 8'd0;
+				red <= 8'd255;
+				blue <= 8'd0;
+			end
+
+		end
+		
+
+		// Top Part of Pipe 3
+		else if ( ((x > pipe3_x_pos) && (x < (pipe3_x_pos + 25))) && (y < PIPE3_Y1) ) begin
+			if(y < 50)	begin
+				green <= 8'd255;
+				red <= 8'd255;
+				blue <= 8'd255;
+			end
+			else  begin
+				green <= 8'd0;
+				red <= 8'd255;
+				blue <= 8'd0;
+			end
+			
+		end
+
+
+		// Bottom Part of Pipe 3
+		else if ( ((x > pipe3_x_pos) && (x < (pipe3_x_pos + PIPE_WIDTH))) && (y > PIPE3_Y2) ) begin
+
+			if(y < 350)	begin
+				green <= 8'd255;
+				red <= 8'd255;
+				blue <= 8'd255;
+			end
+			else if (y < 420) begin
+				green <= 8'd0;
+				red <= 8'd255;
+				blue <= 8'd0;
+			end
+			else begin
+				green <= 8'd255;
+				red <= 8'd255;
+				blue <= 8'd255;
+			end
+		end
+		
+		
+		
+		else begin
+			red <= 8'd179;
+			green <= 8'd242;
+			blue <= 8'd255;
+		end
+	end
+
+	// collision detect
+	always @(posedge clk)
+	begin
+		if (reset) begin
+			// Game End
+			game_end <= 0;
+		end
+		else begin
+			if (start_game) begin
+				if ( (pipe1_x_pos > (BIRD_START_X - PIPE_WIDTH)) && (pipe1_x_pos < (BIRD_START_X + BIRD_WIDTH)) ) begin
+				
+					if (bird_y_pos <= PIPE1_Y1 || (bird_y_pos + BIRD_WIDTH) >= PIPE1_Y2 ) begin
+						game_end <= 1;
+						end
+					else begin
+						game_end <= 0;
+						end
+					end
+			
+			 else if( (pipe2_x_pos > (BIRD_START_X - PIPE_WIDTH)) && (pipe2_x_pos < (BIRD_START_X + BIRD_WIDTH)) ) begin
+					if (bird_y_pos <= PIPE2_Y1 || (bird_y_pos + BIRD_WIDTH) >= PIPE2_Y2 ) begin
+						game_end <= 1;
+						end
+					else begin
+						game_end <= 0;
+						end
+					end
+			 else if( (pipe3_x_pos > (BIRD_START_X - PIPE_WIDTH)) && (pipe3_x_pos < (BIRD_START_X + BIRD_WIDTH)) ) begin
+					if (bird_y_pos <= PIPE3_Y1 || (bird_y_pos + BIRD_WIDTH) >= PIPE3_Y2 ) begin
+						game_end <= 1;
+						end
+					else begin
+						game_end <= 0;
+						end
+					end
+			end		
+			else if (reset_game) begin
+				game_end <= 0;
+			end
+		end
+	end
+
+	/*****************************************************************************
+	 *                            Combinational Logic                            *
+	 *****************************************************************************/
+
+	// Output Assignments
+
+	assign data				= {red, green, blue};
+	assign startofpacket	= (x == 0) & (y == 0);
+	assign endofpacket		= (x == (WIDTH - 1)) & (y == (HEIGHT - 1));
+	assign empty			= 1'b0;
+	assign valid			= 1'b1;
+	
+
+	/*****************************************************************************
+	 *                              Internal Modules                             *
+	 *****************************************************************************/
+
+		key_debouncer key0 (
+			.clk (clk),
+			.button (keys[0]),
+			.button_state (key0_state),
+			.pressed (key0_pressed),
+			.released (key0_released)
+		);
+
+		key_debouncer key2 (
+			.clk (clk),
+			.button (keys[2]),
+			.button_state (key2_state),
+			.pressed (key2_pressed),
+			.released (key2_released)
+		);
+
+		key_debouncer key3 (
+			.clk (clk),
+			.button (keys[3]),
+			.button_state (key3_state),
+			.pressed (key3_pressed),
+			.released (key3_released)
+		);
+
+	endmodule

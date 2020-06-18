@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<system name="$${FILENAME}">
+ <component
+   name="$${FILENAME}"
+   displayName="$${FILENAME}"
+   version="1.0"
+   description=""
+   tags=""
+   categories="System" />
+ <parameter name="bonusData"><![CDATA[bonusData 
+{
+   element VGA_Subsystem
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element VGA_Subsystem
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element VGA_Subsystem
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element VGA_Subsystem
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element magical_pug_generator_0
+   {
+      datum _sortIndex
+      {
+         value = "4";
+         type = "int";
+      }
+   }
+   element rgb_resampler
+   {
+      datum _sortIndex
+      {
+         value = "1";
+         type = "int";
+      }
+   }
+   element sys_clk
+   {
+      datum _sortIndex
+      {
+         value = "0";
+         type = "int";
+      }
+   }
+   element vga_controller
+   {
+      datum _sortIndex
+      {
+         value = "3";
+         type = "int";
+      }
+   }
+   element vga_fifo
+   {
+      datum _sortIndex
+      {
+         value = "2";
+         type = "int";
+      }
+   }
+   element video_pll_0
+   {
+      datum _sortIndex
+      {
+         value = "5";
+         type = "int";
+      }
+   }
+}
+]]></parameter>
+ <parameter name="clockCrossingAdapter" value="HANDSHAKE" />
+ <parameter name="device" value="5CSEMA5F31C6" />
+ <parameter name="deviceFamily" value="Cyclone V" />
+ <parameter name="deviceSpeedGrade" value="6" />
+ <parameter name="fabricMode" value="QSYS" />
+ <parameter name="generateLegacySim" value="false" />
+ <parameter name="generationId" value="0" />
+ <parameter name="globalResetBus" value="false" />
+ <parameter name="hdlLanguage" value="VERILOG" />
+ <parameter name="hideFromIPCatalog" value="false" />
+ <parameter name="lockedInterfaceDefinition" value="" />
+ <parameter name="maxAdditionalLatency" value="1" />
+ <parameter name="projectName" value="FlappyBird.qpf" />
+ <parameter name="sopcBorderPoints" value="false" />
+ <parameter name="systemHash" value="0" />
+ <parameter name="testBenchDutName" value="" />
+ <parameter name="timeStamp" value="0" />
+ <parameter name="useTestBenchNamingPattern" value="false" />
+ <instanceScript></instanceScript>
+ <interface name="clk" internal="sys_clk.clk_in" type="clock" dir="end" />
+ <interface
+   name="digit_0"
+   internal="magical_pug_generator_0.Digit_0"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="digit_1"
+   internal="magical_pug_generator_0.Digit_1"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="digit_2"
+   internal="magical_pug_generator_0.Digit_2"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="keys"
+   internal="magical_pug_generator_0.keys"
+   type="conduit"
+   dir="end" />
+ <interface name="reset" internal="sys_clk.clk_in_reset" type="reset" dir="end" />
+ <interface
+   name="score"
+   internal="magical_pug_generator_0.score"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="switch"
+   internal="magical_pug_generator_0.switch"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="vga"
+   internal="vga_controller.external_interface"
+   type="conduit"
+   dir="end" />
+ <module
+   name="magical_pug_generator_0"
+   kind="magical_pug_generator"
+   version="1.0"
+   enabled="1">
+  <parameter name="DW" value="23" />
+  <parameter name="HEIGHT" value="480" />
+  <parameter name="HW" value="9" />
+  <parameter name="WIDTH" value="640" />
+  <parameter name="WW" value="10" />
+ </module>
+ <module
+   name="rgb_resampler"
+   kind="altera_up_avalon_video_rgb_resampler"
+   version="18.0"
+   enabled="1">
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="50000000" />
+  <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
+  <parameter name="alpha" value="1023" />
+  <parameter name="input_type" value="24-bit RGB" />
+  <parameter name="output_type" value="30-bit RGB" />
+ </module>
+ <module name="sys_clk" kind="clock_source" version="18.1" enabled="1">
+  <parameter name="clockFrequency" value="50000000" />
+  <parameter name="clockFrequencyKnown" value="true" />
+  <parameter name="inputClockFrequency" value="0" />
+  <parameter name="resetSynchronousEdges" value="NONE" />
+ </module>
+ <module
+   name="vga_controller"
+   kind="altera_up_avalon_video_vga_controller"
+   version="18.1"
+   enabled="1">
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="25000000" />
+  <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
+  <parameter name="board" value="DE1-SoC" />
+  <parameter name="device" value="VGA Connector" />
+  <parameter name="resolution" value="VGA 640x480" />
+  <parameter name="underflow_flag" value="false" />
+ </module>
+ <module
+   name="vga_fifo"
+   kind="altera_up_avalon_video_dual_clock_buffer"
+   version="18.0"
+   enabled="1">
+  <parameter name="AUTO_CLOCK_STREAM_IN_CLOCK_RATE" value="50000000" />
+  <parameter name="AUTO_CLOCK_STREAM_OUT_CLOCK_RATE" value="25000000" />
+  <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
+  <parameter name="color_bits" value="10" />
+  <parameter name="color_planes" value="3" />
+ </module>
+ <module
+   name="video_pll_0"
+   kind="altera_up_avalon_video_pll"
+   version="18.0"
+   enabled="1">
+  <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
+  <parameter name="AUTO_DEVICE_SPEEDGRADE" value="6" />
+  <parameter name="camera">5MP Digital Camera (THDB_D5M)</parameter>
+  <parameter name="device_family" value="Cyclone V" />
+  <parameter name="gui_refclk" value="50.0" />
+  <parameter name="gui_resolution" value="VGA 640x480" />
+  <parameter name="lcd">7" LCD on VEEK-MT and MTL/MTL2 Modules</parameter>
+  <parameter name="lcd_clk_en" value="false" />
+  <parameter name="vga_clk_en" value="true" />
+  <parameter name="video_in_clk_en" value="false" />
+ </module>
+ <connection
+   kind="avalon_streaming"
+   version="18.1"
+   start="vga_fifo.avalon_dc_buffer_source"
+   end="vga_controller.avalon_vga_sink" />
+ <connection
+   kind="avalon_streaming"
+   version="18.1"
+   start="rgb_resampler.avalon_rgb_source"
+   end="vga_fifo.avalon_dc_buffer_sink" />
+ <connection
+   kind="avalon_streaming"
+   version="18.1"
+   start="magical_pug_generator_0.avalon_streaming_source"
+   end="rgb_resampler.avalon_rgb_sink" />
+ <connection
+   kind="clock"
+   version="18.1"
+   start="sys_clk.clk"
+   end="rgb_resampler.clk" />
+ <connection
+   kind="clock"
+   version="18.1"
+   start="sys_clk.clk"
+   end="magical_pug_generator_0.clock" />
+ <connection
+   kind="clock"
+   version="18.1"
+   start="sys_clk.clk"
+   end="vga_fifo.clock_stream_in" />
+ <connection
+   kind="clock"
+   version="18.1"
+   start="sys_clk.clk"
+   end="video_pll_0.ref_clk" />
+ <connection
+   kind="clock"
+   version="18.1"
+   start="video_pll_0.vga_clk"
+   end="vga_controller.clk" />
+ <connection
+   kind="clock"
+   version="18.1"
+   start="video_pll_0.vga_clk"
+   end="vga_fifo.clock_stream_out" />
+ <connection
+   kind="reset"
+   version="18.1"
+   start="sys_clk.clk_reset"
+   end="video_pll_0.ref_reset" />
+ <connection
+   kind="reset"
+   version="18.1"
+   start="sys_clk.clk_reset"
+   end="rgb_resampler.reset" />
+ <connection
+   kind="reset"
+   version="18.1"
+   start="sys_clk.clk_reset"
+   end="magical_pug_generator_0.reset" />
+ <connection
+   kind="reset"
+   version="18.1"
+   start="sys_clk.clk_reset"
+   end="vga_controller.reset" />
+ <connection
+   kind="reset"
+   version="18.1"
+   start="sys_clk.clk_reset"
+   end="vga_fifo.reset_stream_in" />
+ <connection
+   kind="reset"
+   version="18.1"
+   start="video_pll_0.reset_source"
+   end="vga_fifo.reset_stream_out" />
+ <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
+ <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
+ <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />
+ <interconnectRequirement for="$system" name="qsys_mm.maxAdditionalLatency" value="1" />
+</system>

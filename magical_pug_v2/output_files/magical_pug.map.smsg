@@ -1,0 +1,1 @@
+Warning (10268): Verilog HDL information at magical_pug_generator.v(297): always construct contains both blocking and non-blocking assignments File: D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/VGA_Subsystem/synthesis/submodules/magical_pug_generator.v Line: 297

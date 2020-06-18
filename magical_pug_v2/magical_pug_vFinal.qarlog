@@ -1,0 +1,37 @@
+Quartus Prime Archive log --	D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/magical_pug_vFinal.qarlog
+
+Archive:	D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/magical_pug_vFinal.qar
+Date:		Sun Apr 26 20:57:05 2020
+Quartus Prime		18.1.0 Build 625 09/12/2018 SJ Lite Edition
+
+	=========== Files Selected: ===========
+D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/DE1_SOC_golden_top.v
+D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/VGA_Subsystem.qsys
+D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/VGA_Subsystem.sopcinfo
+D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/VGA_Subsystem/VGA_Subsystem.cmp
+D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/VGA_Subsystem/synthesis/VGA_Subsystem.debuginfo
+D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/VGA_Subsystem/synthesis/VGA_Subsystem.qip
+D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/VGA_Subsystem/synthesis/VGA_Subsystem.v
+D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/VGA_Subsystem/synthesis/submodules/VGA_Subsystem_avalon_st_adapter.v
+D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/VGA_Subsystem/synthesis/submodules/VGA_Subsystem_avalon_st_adapter_data_format_adapter_0.sv
+D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/VGA_Subsystem/synthesis/submodules/VGA_Subsystem_rgb_resampler.v
+D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/VGA_Subsystem/synthesis/submodules/VGA_Subsystem_vga_controller.v
+D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/VGA_Subsystem/synthesis/submodules/VGA_Subsystem_vga_fifo.v
+D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/VGA_Subsystem/synthesis/submodules/VGA_Subsystem_video_pll_0.v
+D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/VGA_Subsystem/synthesis/submodules/VGA_Subsystem_video_pll_0_video_pll.qip
+D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/VGA_Subsystem/synthesis/submodules/VGA_Subsystem_video_pll_0_video_pll.v
+D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/VGA_Subsystem/synthesis/submodules/altera_reset_controller.sdc
+D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/VGA_Subsystem/synthesis/submodules/altera_reset_controller.v
+D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/VGA_Subsystem/synthesis/submodules/altera_reset_synchronizer.v
+D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/VGA_Subsystem/synthesis/submodules/altera_up_avalon_reset_from_locked_signal.v
+D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/VGA_Subsystem/synthesis/submodules/altera_up_avalon_video_vga_timing.v
+D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/VGA_Subsystem/synthesis/submodules/key_debouncer.v
+D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/VGA_Subsystem/synthesis/submodules/magical_pug_generator.v
+D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/assignment_defaults.qdf
+D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/magical_pug.qpf
+D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/magical_pug.qsf
+D:/MSEmbeddedSystems/PLD/Projects/Project3/Module4/magical_pug_v2/output_files/Chain1.cdf
+	======= Total: 26 files to archive =======
+
+	================ Status: ===============
+All files archived successfully.
